@@ -1,227 +1,283 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
-import { Trophy, ArrowRight } from "lucide-react";
 import { germanMCQ } from "@/data/germanMCQ";
+import { motion } from "framer-motion";
+import { Trophy, CheckCircle } from "lucide-react";
 
 
 export default function LessonPage(){
 
-  const [current,setCurrent]=useState(0);
-  const [selected,setSelected]=useState("");
-  const [score,setScore]=useState(0);
-  const [finished,setFinished]=useState(false);
 
+const [current,setCurrent] = useState(0);
 
+const [selected,setSelected] = useState("");
 
-  const quiz=germanMCQ[current];
+const [score,setScore] = useState(0);
 
+const [finished,setFinished] = useState(false);
 
 
-  function completeLesson(){
 
-    const oldXP =
-      Number(localStorage.getItem("xp")) || 0;
+const question = germanMCQ[current];
 
 
-    const oldLessons =
-      Number(localStorage.getItem("lessons")) || 0;
 
+function checkAnswer(option:string){
 
+setSelected(option);
 
-    localStorage.setItem(
-      "xp",
-      String(oldXP + score * 10)
-    );
 
+if(option === question.answer){
 
-    localStorage.setItem(
-      "lessons",
-      String(oldLessons + 1)
-    );
+setScore(score + 1);
 
+}
 
-  }
+}
 
 
 
+function nextQuestion(){
 
-  function checkAnswer(){
 
-    let newScore=score;
+if(current + 1 < germanMCQ.length){
 
+setCurrent(current + 1);
 
-    if(selected===quiz.answer){
+setSelected("");
 
-      newScore=score+1;
-      setScore(newScore);
+}
 
-    }
+else{
 
+setFinished(true);
 
+}
 
-    if(current + 1 < germanMCQ.length){
 
-      setCurrent(current+1);
-      setSelected("");
+}
 
-    }
 
-    else{
 
-      setFinished(true);
 
+if(finished){
 
-      setTimeout(()=>{
 
-        completeLesson();
+return (
 
-      },100);
+<main className="min-h-screen bg-[#050816] px-6 py-32">
 
-    }
+<div className="mx-auto max-w-xl rounded-3xl border border-white/10 bg-white/5 p-10 text-center backdrop-blur-xl">
 
-  }
 
+<Trophy
+size={70}
+className="mx-auto text-green-400"
+/>
 
 
+<h1 className="mt-6 text-4xl font-black text-white">
 
-  if(finished){
+Lesson Complete 🎉
 
-    return(
+</h1>
 
-      <main className="flex min-h-screen items-center justify-center bg-[#050816] px-6">
 
-        <motion.div
+<p className="mt-5 text-xl text-slate-300">
 
-          initial={{
-            scale:0
-          }}
+Your Score:
 
-          animate={{
-            scale:1
-          }}
+<span className="font-bold text-green-400">
 
-          className="rounded-3xl border border-white/10 bg-white/5 p-10 text-center backdrop-blur-xl"
+{" "}
+{score}/{germanMCQ.length}
 
-        >
+</span>
 
-          <Trophy
-            size={70}
-            className="mx-auto text-yellow-400"
-          />
+</p>
 
 
-          <h1 className="mt-6 text-4xl font-black text-white">
-            Lesson Completed 🎉
-          </h1>
 
+<p className="mt-4 text-green-400">
 
-          <p className="mt-4 text-2xl text-green-400">
-            Score: {score}/{germanMCQ.length}
-          </p>
++{score * 10} XP Earned
 
+</p>
 
-          <p className="mt-3 text-slate-400">
-            +{score * 10} XP Added
-          </p>
 
+</div>
 
-        </motion.div>
+</main>
 
+)
 
-      </main>
+}
 
-    );
 
-  }
 
 
 
+return (
 
-  return(
+<main className="min-h-screen bg-[#050816] px-6 py-32">
 
-    <main className="min-h-screen bg-[#050816] px-6 py-32">
 
-      <div className="mx-auto max-w-3xl">
+<div className="mx-auto max-w-3xl">
 
 
-        <h1 className="text-4xl font-black text-white">
-          German Basics Lesson
-        </h1>
+<div className="mb-8">
 
+<p className="text-slate-400">
 
-        <p className="mt-3 text-slate-400">
-          Question {current+1}/{germanMCQ.length}
-        </p>
+Question {current + 1} / {germanMCQ.length}
 
+</p>
 
 
-        <div className="mt-10 rounded-3xl border border-white/10 bg-white/5 p-8">
+<div className="mt-3 h-3 rounded-full bg-white/10">
 
+<div
 
-          <h2 className="text-2xl font-bold text-white">
-            {quiz.question}
-          </h2>
+className="h-3 rounded-full bg-green-500"
 
+style={{
 
+width:`${((current+1)/germanMCQ.length)*100}%`
 
-          <div className="mt-8 space-y-4">
+}}
 
+></div>
 
-            {quiz.options.map((option)=>(
+</div>
 
-              <button
+</div>
 
-                key={option}
 
-                onClick={()=>setSelected(option)}
 
-                className={`w-full rounded-2xl border p-4 text-left ${
-                  selected===option
-                  ?
-                  "border-green-400 bg-green-500/20 text-green-300"
-                  :
-                  "border-white/10 text-white"
-                }`}
 
-              >
+<motion.div
 
-                {option}
+initial={{
+opacity:0,
+y:20
+}}
 
-              </button>
+animate={{
+opacity:1,
+y:0
+}}
 
-            ))}
+className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl"
 
+>
 
-          </div>
 
+<h1 className="text-3xl font-black text-white">
 
+{question.question}
 
-          <button
+</h1>
 
-            disabled={!selected}
 
-            onClick={checkAnswer}
 
-            className="mt-8 flex w-full items-center justify-center gap-2 rounded-2xl bg-green-500 py-4 font-bold text-white disabled:opacity-40"
+<div className="mt-8 space-y-4">
 
-          >
 
-            Next
-            <ArrowRight/>
+{
+question.options.map((option)=>(
 
-          </button>
 
+<button
 
-        </div>
+key={option}
 
+onClick={()=>checkAnswer(option)}
 
-      </div>
+className={`w-full rounded-xl border p-4 text-left text-white transition
 
+${selected===option
 
-    </main>
+?
 
-  );
+"border-green-400 bg-green-500/20"
+
+:
+
+"border-white/10 bg-white/5 hover:bg-white/10"
+
+}
+
+`}
+
+>
+
+
+{option}
+
+
+
+{
+selected===option &&
+
+<CheckCircle
+className="ml-2 inline text-green-400"
+/>
+
+}
+
+
+
+</button>
+
+
+))
+
+}
+
+
+</div>
+
+
+
+
+<button
+
+disabled={!selected}
+
+onClick={nextQuestion}
+
+className="mt-8 w-full rounded-xl bg-green-500 py-4 font-bold text-white disabled:opacity-50"
+
+>
+
+
+{
+current + 1 === germanMCQ.length
+
+?
+
+"Finish Lesson"
+
+:
+
+"Next Question"
+
+}
+
+
+</button>
+
+
+
+</motion.div>
+
+
+</div>
+
+
+</main>
+
+)
 
 }
