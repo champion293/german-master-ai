@@ -1,105 +1,215 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { UserPlus, Sparkles, Lamp } from "lucide-react";
 import { useState } from "react";
+import { supabase } from "@/lib/supabase/client";
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { UserPlus } from "lucide-react";
 
-export default function RegisterPage() {
-  const [lampOn, setLampOn] = useState(false);
+
+export default function RegisterPage(){
+
+  const [name,setName] = useState("");
+  const [email,setEmail] = useState("");
+  const [password,setPassword] = useState("");
+
+  const [message,setMessage] = useState("");
+
+  const [loading,setLoading] = useState(false);
+
+
+
+  async function registerUser(){
+
+    setLoading(true);
+    setMessage("");
+
+
+    const { data, error } = await supabase.auth.signUp({
+
+      email,
+
+      password,
+
+      options:{
+
+        data:{
+          name:name
+        }
+
+      }
+
+    });
+
+
+
+    if(error){
+
+      setMessage(error.message);
+
+    }
+    else{
+
+      setMessage(
+        "Account created! Check your email for verification."
+      );
+
+    }
+
+
+    setLoading(false);
+
+  }
+
+
+
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#020617] px-6">
 
-      <div className="relative w-full max-w-md">
+    <main className="min-h-screen bg-[#050816] px-6 py-32">
 
-        {/* Lamp */}
-        <motion.button
-          onClick={() => setLampOn(!lampOn)}
-          animate={{
-            rotate: lampOn ? [0, -5, 5, 0] : 0,
-          }}
-          className="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-full border border-white/10 bg-white/5 backdrop-blur-xl"
-        >
-          <Lamp
-            size={45}
-            className={
-              lampOn
-                ? "text-yellow-400 drop-shadow-[0_0_25px_#facc15]"
-                : "text-slate-400"
-            }
-          />
-        </motion.button>
+
+      <div className="mx-auto max-w-md">
 
 
         <motion.div
-          animate={{
-            opacity: lampOn ? 1 : 0.35,
-            y: lampOn ? 0 : 30,
+
+          initial={{
+            opacity:0,
+            y:30
           }}
+
+          animate={{
+            opacity:1,
+            y:0
+          }}
+
           className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl"
+
         >
 
-          <div className="text-center">
 
-            <Sparkles className="mx-auto text-green-400" />
+          <UserPlus
+            className="mx-auto text-green-400"
+            size={50}
+          />
 
-            <h1 className="mt-4 text-3xl font-black text-white">
-              Create Account
-            </h1>
 
-            <p className="mt-2 text-slate-400">
-              Join GermanMaster AI
-            </p>
+          <h1 className="mt-5 text-center text-4xl font-black text-white">
+            Create Account
+          </h1>
 
-          </div>
 
 
           <div className="mt-8 space-y-4">
 
+
             <input
-              disabled={!lampOn}
-              placeholder="Full Name"
-              className="w-full rounded-2xl border border-white/10 bg-black/20 px-5 py-4 text-white outline-none"
+
+              placeholder="Name"
+
+              value={name}
+
+              onChange={(e)=>setName(e.target.value)}
+
+              className="w-full rounded-xl bg-black/20 p-4 text-white outline-none"
+
             />
 
 
+
             <input
-              disabled={!lampOn}
-              type="email"
+
               placeholder="Email"
-              className="w-full rounded-2xl border border-white/10 bg-black/20 px-5 py-4 text-white outline-none"
+
+              type="email"
+
+              value={email}
+
+              onChange={(e)=>setEmail(e.target.value)}
+
+              className="w-full rounded-xl bg-black/20 p-4 text-white outline-none"
+
             />
+
 
 
             <input
-              disabled={!lampOn}
-              type="password"
+
               placeholder="Password"
-              className="w-full rounded-2xl border border-white/10 bg-black/20 px-5 py-4 text-white outline-none"
+
+              type="password"
+
+              value={password}
+
+              onChange={(e)=>setPassword(e.target.value)}
+
+              className="w-full rounded-xl bg-black/20 p-4 text-white outline-none"
+
             />
+
 
 
             <button
-              disabled={!lampOn}
-              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-green-500 py-4 font-bold text-white transition hover:bg-green-400 disabled:opacity-40"
+
+              onClick={registerUser}
+
+              disabled={loading}
+
+              className="w-full rounded-xl bg-green-500 py-4 font-bold text-white"
+
             >
-              <UserPlus size={20}/>
-              Create Account
+
+              {
+                loading
+                ?
+                "Creating..."
+                :
+                "Register"
+              }
+
             </button>
+
 
           </div>
 
 
-          {!lampOn && (
-            <p className="mt-5 text-center text-sm text-slate-400">
-              Turn on the lamp to register ✨
+
+
+          {
+            message &&
+
+            <p className="mt-5 text-center text-green-400">
+              {message}
             </p>
-          )}
+
+          }
+
+
+
+          <p className="mt-6 text-center text-slate-400">
+
+            Already have account?
+
+            <Link
+              href="/login"
+              className="ml-2 text-green-400"
+            >
+              Login
+            </Link>
+
+          </p>
+
+
 
         </motion.div>
 
+
       </div>
 
+
     </main>
+
   );
+
 }
