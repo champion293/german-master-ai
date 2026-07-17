@@ -1,41 +1,16 @@
 "use client";
 
-import Particles, { initParticlesEngine } from "@tsparticles/react";
-import { loadSlim } from "@tsparticles/slim";
-import { useEffect, useState } from "react";
+import Particles from "@tsparticles/react";
 
 
-export default function ParticleBackground(){
-
-  const [init,setInit] = useState(false);
-
-
-  useEffect(()=>{
-
-    initParticlesEngine(async (engine)=>{
-
-      await loadSlim(engine);
-
-    }).then(()=>{
-
-      setInit(true);
-
-    });
-
-
-  },[]);
-
-
-
-  if(!init){
-    return null;
-  }
-
+export default function ParticleBackground() {
 
 
   return (
 
     <Particles
+
+      className="absolute inset-0 -z-10"
 
       options={{
 
@@ -58,7 +33,8 @@ export default function ParticleBackground(){
 
           links:{
             enable:true,
-            color:"#22c55e"
+            color:"#22c55e",
+            opacity:0.2
           },
 
 
@@ -73,13 +49,16 @@ export default function ParticleBackground(){
               min:1,
               max:3
             }
+          },
+
+
+          opacity:{
+            value:0.5
           }
 
         }
 
       }}
-
-      className="absolute inset-0"
 
     />
 
