@@ -2,189 +2,129 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import Link from "next/link";
-import { addLessonReward } from "@/utils/progress";
+import { Trophy, ArrowRight } from "lucide-react";
+import { germanMCQ } from "@/data/germanMCQ";
 
 
-const questions = [
-  {
-    german: "Hallo",
-    options: ["Hello", "Good Night", "Thank You", "Bye"],
-    answer: "Hello",
-  },
-  {
-    german: "Danke",
-    options: ["Please", "Sorry", "Thank You", "Welcome"],
-    answer: "Thank You",
-  },
-  {
-    german: "Guten Morgen",
-    options: ["Good Night", "Good Morning", "Good Evening", "Bye"],
-    answer: "Good Morning",
-  },
-];
+export default function LessonPage(){
+
+  const [current,setCurrent]=useState(0);
+  const [selected,setSelected]=useState("");
+  const [score,setScore]=useState(0);
+  const [finished,setFinished]=useState(false);
 
 
-export default function LessonPage() {
 
-  const [current, setCurrent] = useState(0);
-  const [xp, setXp] = useState(0);
-  const [hearts, setHearts] = useState(3);
-  const [complete, setComplete] = useState(false);
-  const [message, setMessage] = useState("");
+  const quiz=germanMCQ[current];
 
 
-  function checkAnswer(option: string) {
 
-    if (option === questions[current].answer) {
+  function completeLesson(){
 
-      setXp((prev) => prev + 10);
-      setMessage("Correct! ⭐ +10 XP");
-
-    } else {
-
-      setHearts((prev) => prev - 1);
-      setMessage("Wrong Answer ❤️");
-
-    }
+    const oldXP =
+      Number(localStorage.getItem("xp")) || 0;
 
 
-    setTimeout(() => {
-
-      setMessage("");
-
-
-      if (current < questions.length - 1) {
-
-        setCurrent((prev) => prev + 1);
-
-      } else {
-
-        // Save Progress
-        addLessonReward();
-
-        setComplete(true);
-
-      }
+    const oldLessons =
+      Number(localStorage.getItem("lessons")) || 0;
 
 
-    }, 1000);
+
+    localStorage.setItem(
+      "xp",
+      String(oldXP + score * 10)
+    );
+
+
+    localStorage.setItem(
+      "lessons",
+      String(oldLessons + 1)
+    );
+
 
   }
 
 
 
-  if (complete) {
 
-    return (
+  function checkAnswer(){
 
-      <main className="
-      min-h-screen
-      flex
-      items-center
-      justify-center
-      bg-gradient-to-br from-green-950 via-black to-yellow-900
-      px-6">
+    let newScore=score;
 
+
+    if(selected===quiz.answer){
+
+      newScore=score+1;
+      setScore(newScore);
+
+    }
+
+
+
+    if(current + 1 < germanMCQ.length){
+
+      setCurrent(current+1);
+      setSelected("");
+
+    }
+
+    else{
+
+      setFinished(true);
+
+
+      setTimeout(()=>{
+
+        completeLesson();
+
+      },100);
+
+    }
+
+  }
+
+
+
+
+  if(finished){
+
+    return(
+
+      <main className="flex min-h-screen items-center justify-center bg-[#050816] px-6">
 
         <motion.div
 
-        initial={{
-          scale:0.5,
-          opacity:0
-        }}
+          initial={{
+            scale:0
+          }}
 
-        animate={{
-          scale:1,
-          opacity:1
-        }}
+          animate={{
+            scale:1
+          }}
 
-        className="
-        text-center
-        p-10
-        rounded-3xl
-        bg-white/10
-        backdrop-blur-xl
-        border border-white/20">
+          className="rounded-3xl border border-white/10 bg-white/5 p-10 text-center backdrop-blur-xl"
 
+        >
 
-          <div className="text-7xl">
-            🎉
-          </div>
+          <Trophy
+            size={70}
+            className="mx-auto text-yellow-400"
+          />
 
 
-          <h1 className="
-          text-4xl
-          font-bold
-          text-white
-          mt-5">
-
-            Lesson Completed!
-
+          <h1 className="mt-6 text-4xl font-black text-white">
+            Lesson Completed 🎉
           </h1>
 
 
-          <p className="
-          text-yellow-400
-          text-3xl
-          font-bold
-          mt-5">
-
-            +50 XP ⭐
-
+          <p className="mt-4 text-2xl text-green-400">
+            Score: {score}/{germanMCQ.length}
           </p>
 
 
-          <p className="
-          text-gray-300
-          mt-3">
-
-            Your progress is saved 🇩🇪
-
+          <p className="mt-3 text-slate-400">
+            +{score * 10} XP Added
           </p>
-
-
-
-          <div className="
-          flex
-          gap-4
-          justify-center
-          mt-8">
-
-
-            <Link
-            href="/dashboard"
-            className="
-            px-6
-            py-3
-            rounded-full
-            bg-yellow-400
-            text-black
-            font-bold">
-
-              Dashboard
-
-            </Link>
-
-
-
-            <Link
-            href="/lesson"
-            className="
-            px-6
-            py-3
-            rounded-full
-            border
-            border-white/30
-            text-white
-            font-bold">
-
-              Next Lesson
-
-            </Link>
-
-
-          </div>
 
 
         </motion.div>
@@ -198,111 +138,54 @@ export default function LessonPage() {
 
 
 
-  const question = questions[current];
+
+  return(
+
+    <main className="min-h-screen bg-[#050816] px-6 py-32">
+
+      <div className="mx-auto max-w-3xl">
 
 
-  return (
-
-    <main className="
-    min-h-screen
-    bg-gradient-to-br from-green-950 via-black to-yellow-900
-    px-6 py-10">
+        <h1 className="text-4xl font-black text-white">
+          German Basics Lesson
+        </h1>
 
 
-      <div className="
-      max-w-3xl
-      mx-auto">
-
-
-        <div className="
-        flex
-        justify-between
-        bg-white/10
-        backdrop-blur-xl
-        rounded-3xl
-        p-5
-        text-white">
-
-
-          <span>
-            ⭐ XP: {xp}
-          </span>
-
-
-          <span>
-            ❤️ Hearts: {hearts}
-          </span>
-
-
-        </div>
+        <p className="mt-3 text-slate-400">
+          Question {current+1}/{germanMCQ.length}
+        </p>
 
 
 
-        <motion.div
-
-        initial={{
-          opacity:0,
-          y:40
-        }}
-
-        animate={{
-          opacity:1,
-          y:0
-        }}
-
-        className="
-        mt-10
-        p-8
-        rounded-3xl
-        bg-white/10
-        backdrop-blur-xl
-        border border-white/20
-        text-center">
+        <div className="mt-10 rounded-3xl border border-white/10 bg-white/5 p-8">
 
 
-          <h1 className="
-          text-5xl
-          font-bold
-          text-white">
-
-            {question.german} 🇩🇪
-
-          </h1>
-
-
-          <p className="
-          text-gray-300
-          mt-5">
-
-            Select correct meaning
-
-          </p>
+          <h2 className="text-2xl font-bold text-white">
+            {quiz.question}
+          </h2>
 
 
 
-          <div className="
-          grid
-          gap-4
-          mt-8">
+          <div className="mt-8 space-y-4">
 
 
-            {question.options.map((option)=>(
+            {quiz.options.map((option)=>(
 
               <button
 
-              key={option}
+                key={option}
 
-              onClick={() => checkAnswer(option)}
+                onClick={()=>setSelected(option)}
 
-              className="
-              py-4
-              rounded-2xl
-              bg-white/10
-              border border-white/20
-              text-white
-              hover:bg-yellow-400
-              hover:text-black
-              transition">
+                className={`w-full rounded-2xl border p-4 text-left ${
+                  selected===option
+                  ?
+                  "border-green-400 bg-green-500/20 text-green-300"
+                  :
+                  "border-white/10 text-white"
+                }`}
+
+              >
 
                 {option}
 
@@ -315,33 +198,23 @@ export default function LessonPage() {
 
 
 
-          {message && (
+          <button
 
-            <motion.p
+            disabled={!selected}
 
-            initial={{
-              scale:0
-            }}
+            onClick={checkAnswer}
 
-            animate={{
-              scale:1
-            }}
+            className="mt-8 flex w-full items-center justify-center gap-2 rounded-2xl bg-green-500 py-4 font-bold text-white disabled:opacity-40"
 
-            className="
-            mt-6
-            text-yellow-400
-            text-xl
-            font-bold">
+          >
 
-              {message}
+            Next
+            <ArrowRight/>
 
-            </motion.p>
-
-          )}
+          </button>
 
 
-
-        </motion.div>
+        </div>
 
 
       </div>

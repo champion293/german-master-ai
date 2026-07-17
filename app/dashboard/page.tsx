@@ -1,185 +1,119 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Link from "next/link";
+import {
+  Flame,
+  Trophy,
+  BookOpen,
+  Star,
+  Target,
+} from "lucide-react";
+import { useEffect, useState } from "react";
 
-export default function Dashboard() {
+
+export default function Dashboard(){
+
+  const [xp,setXp]=useState(0);
+  const [lessons,setLessons]=useState(0);
+
+
+  useEffect(()=>{
+
+    setXp(
+      Number(localStorage.getItem("xp")) || 0
+    );
+
+    setLessons(
+      Number(localStorage.getItem("lessons")) || 0
+    );
+
+  },[]);
+
+
+
+  const stats=[
+
+    {
+      title:"Daily Streak",
+      value:"🔥 1 Day",
+      icon:Flame
+    },
+
+    {
+      title:"XP Earned",
+      value:`${xp} XP`,
+      icon:Star
+    },
+
+    {
+      title:"Lessons",
+      value:`${lessons} Completed`,
+      icon:BookOpen
+    },
+
+    {
+      title:"Achievements",
+      value:"New",
+      icon:Trophy
+    }
+
+  ];
+
+
 
   return (
-    <main className="
-    min-h-screen
-    bg-gradient-to-br from-green-950 via-black to-yellow-900
-    px-6 py-10
-    ">
+
+    <main className="min-h-screen bg-[#050816] px-6 py-32">
+
+      <div className="mx-auto max-w-7xl">
 
 
-      <div className="max-w-6xl mx-auto">
-
-
-        {/* Profile Header */}
-
-        <motion.div
-          initial={{opacity:0,y:-30}}
-          animate={{opacity:1,y:0}}
-          className="
-          flex flex-col md:flex-row
-          justify-between items-center
-          bg-white/10
-          backdrop-blur-xl
-          border border-white/20
-          rounded-3xl
-          p-6
-          "
-        >
-
-          <div>
-
-            <h1 className="
-            text-4xl
-            font-bold
-            text-white">
-
-              Hallo, Champion 🇩🇪
-
-            </h1>
-
-
-            <p className="
-            text-gray-300
-            mt-2">
-
-              Keep learning every day 🚀
-
-            </p>
-
-          </div>
-
-
-          <div className="text-6xl">
-            🧑‍🎓
-          </div>
-
-
-        </motion.div>
+        <h1 className="text-5xl font-black text-white">
+          Learning Dashboard
+        </h1>
 
 
 
-        {/* Stats */}
-
-        <div className="
-        grid
-        md:grid-cols-3
-        gap-6
-        mt-8">
+        <div className="mt-12 grid gap-6 md:grid-cols-4">
 
 
-          <Stat
-          icon="⭐"
-          title="XP Points"
-          value="1250"
-          />
+          {stats.map((item)=>{
+
+            const Icon=item.icon;
 
 
-          <Stat
-          icon="🔥"
-          title="Daily Streak"
-          value="7 Days"
-          />
+            return(
+
+              <motion.div
+
+              key={item.title}
+
+              whileHover={{
+                y:-8
+              }}
+
+              className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl"
+
+              >
+
+                <Icon className="text-green-400"/>
 
 
-          <Stat
-          icon="🇩🇪"
-          title="German Level"
-          value="A1 Beginner"
-          />
+                <h2 className="mt-5 text-white">
+                  {item.title}
+                </h2>
 
 
-        </div>
+                <p className="mt-2 text-2xl font-black text-green-400">
+                  {item.value}
+                </p>
 
 
+              </motion.div>
 
+            )
 
-        {/* Lessons */}
-
-        <section className="mt-12">
-
-
-          <h2 className="
-          text-3xl
-          font-bold
-          text-white
-          mb-6">
-
-            German Lessons 📚
-
-          </h2>
-
-
-
-          <div className="
-          grid
-          md:grid-cols-3
-          gap-6">
-
-
-            <Lesson
-            emoji="🔤"
-            title="German Alphabet"
-            progress="100%"
-            />
-
-
-            <Lesson
-            emoji="💬"
-            title="Basic Words"
-            progress="60%"
-            />
-
-
-            <Lesson
-            emoji="🎤"
-            title="Speaking Practice"
-            progress="25%"
-            />
-
-
-          </div>
-
-
-        </section>
-
-
-
-
-        {/* Start Button */}
-
-        <div className="
-        text-center
-        mt-12">
-
-
-          <Link
-
-          href="/lesson"
-
-          className="
-          inline-block
-          px-10
-          py-4
-          rounded-full
-          bg-yellow-400
-          text-black
-          font-bold
-          text-lg
-          hover:scale-105
-          transition
-          shadow-xl
-          "
-          >
-
-            Start Lesson 🚀
-
-          </Link>
+          })}
 
 
         </div>
@@ -187,163 +121,8 @@ export default function Dashboard() {
 
       </div>
 
-
     </main>
+
   );
-}
-
-
-
-
-
-function Stat({
-icon,
-title,
-value
-}:{
-icon:string;
-title:string;
-value:string;
-}){
-
-
-return(
-
-<motion.div
-
-whileHover={{
-scale:1.05
-}}
-
-className="
-p-6
-rounded-3xl
-bg-white/10
-backdrop-blur-xl
-border border-white/20
-text-center
-"
-
->
-
-
-<div className="text-4xl">
-{icon}
-</div>
-
-
-<h3 className="
-text-white
-text-xl
-mt-3">
-
-{title}
-
-</h3>
-
-
-<p className="
-text-yellow-400
-text-2xl
-font-bold
-mt-2">
-
-{value}
-
-</p>
-
-
-</motion.div>
-
-)
-
-}
-
-
-
-
-
-
-function Lesson({
-emoji,
-title,
-progress
-}:{
-emoji:string;
-title:string;
-progress:string;
-}){
-
-
-return(
-
-<motion.div
-
-whileHover={{
-y:-10
-}}
-
-className="
-p-6
-rounded-3xl
-bg-white/10
-backdrop-blur-xl
-border border-white/20
-"
-
->
-
-
-<div className="text-5xl">
-{emoji}
-</div>
-
-
-<h3 className="
-text-white
-text-2xl
-font-bold
-mt-4">
-
-{title}
-
-</h3>
-
-
-<div className="
-mt-5
-h-3
-bg-white/20
-rounded-full">
-
-<div
-
-className="
-h-full
-bg-yellow-400
-rounded-full
-"
-
-style={{
-width:progress
-}}
-
-/>
-
-</div>
-
-
-<p className="
-text-gray-300
-mt-3">
-
-Progress {progress}
-
-</p>
-
-
-</motion.div>
-
-)
 
 }

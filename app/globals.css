@@ -1,105 +1,219 @@
+/* =========================================
+   GermanMaster AI - Premium Global Style
+========================================= */
+
 @import "tailwindcss";
 
-/* ==========================================
-   GermanMaster AI — Global Theme
-   ========================================== */
-
 :root {
-
-  /* Colors */
-
   --background: #050816;
   --foreground: #ffffff;
+  --green: #22c55e;
+  --cyan: #06b6d4;
+}
 
-  --primary: #FFD54A;
-  --secondary: #7C5CFF;
 
-  --glass: rgba(255,255,255,.06);
-  --border: rgba(255,255,255,.12);
+* {
+  box-sizing: border-box;
+}
 
-  --shadow:
-      0 0 20px rgba(124,92,255,.25);
+
+html {
+  scroll-behavior: smooth;
+}
+
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(34,197,94,0.12),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba(6,182,212,0.12),
+      transparent 35%
+    ),
+    var(--background);
+
+  color: var(--foreground);
+  overflow-x: hidden;
+}
+
+
+/* Custom Scrollbar */
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+
+::-webkit-scrollbar-track {
+  background: #020617;
+}
+
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    var(--green),
+    var(--cyan)
+  );
+
+  border-radius: 20px;
+}
+
+
+/* Selection */
+
+::selection {
+  background: rgba(34,197,94,0.4);
+  color: white;
+}
+
+
+/* Glass Effect */
+
+.glass {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+
+/* Glow Animation */
+
+.glow {
+  animation: glow 3s ease-in-out infinite;
+}
+
+
+@keyframes glow {
+
+  0%,
+  100% {
+    filter:
+      drop-shadow(
+        0 0 10px rgba(34,197,94,0.3)
+      );
+  }
+
+
+  50% {
+
+    filter:
+      drop-shadow(
+        0 0 30px rgba(6,182,212,0.6)
+      );
+
+  }
 
 }
 
-@theme inline {
 
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+/* Floating Animation */
 
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.float {
 
-}
-
-*{
-
-margin:0;
-padding:0;
-box-sizing:border-box;
+  animation:
+    float 5s ease-in-out infinite;
 
 }
 
-html{
 
-scroll-behavior:smooth;
+@keyframes float {
 
-}
+  0%,
+  100% {
 
-body{
+    transform:
+      translateY(0);
 
-background:var(--background);
+  }
 
-color:var(--foreground);
 
-font-family:Arial,Helvetica,sans-serif;
+  50% {
 
-overflow-x:hidden;
+    transform:
+      translateY(-15px);
 
-}
-
-/* Buttons */
-
-.btn-primary{
-
-background:var(--primary);
-
-color:#000;
-
-border-radius:999px;
-
-padding:14px 30px;
-
-font-weight:700;
-
-transition:.3s;
+  }
 
 }
 
-.btn-primary:hover{
 
-transform:translateY(-3px);
+/* Gradient Text */
 
-box-shadow:0 0 30px rgba(255,213,74,.4);
+.gradient-text {
+
+  background:
+    linear-gradient(
+      90deg,
+      #22c55e,
+      #06b6d4
+    );
+
+  -webkit-background-clip:
+    text;
+
+  background-clip:
+    text;
+
+  color:
+    transparent;
 
 }
 
-/* Glass */
 
-.glass{
+/* Aurora Background */
 
-background:var(--glass);
+.aurora {
 
-backdrop-filter:blur(20px);
+  background:
+    linear-gradient(
+      120deg,
+      rgba(34,197,94,0.15),
+      rgba(6,182,212,0.15),
+      rgba(168,85,247,0.15)
+    );
 
-border:1px solid var(--border);
+  filter:
+    blur(80px);
+
+  animation:
+    auroraMove 10s infinite alternate;
 
 }
 
-/* Glow */
 
-.glow{
+@keyframes auroraMove {
 
-box-shadow:var(--shadow);
+  from {
+
+    transform:
+      translate(-20px,-20px)
+      scale(1);
+
+  }
+
+
+  to {
+
+    transform:
+      translate(30px,20px)
+      scale(1.2);
+
+  }
+
+}
+
+
+/* Remove tap highlight */
+
+button,
+a {
+
+  -webkit-tap-highlight-color:
+    transparent;
 
 }
